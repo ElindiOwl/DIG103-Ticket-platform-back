@@ -1,0 +1,13 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+*.db
+*.sqlite
+*.sqlite3
+database.sqlite
+db.sqlite
+.idea/
+.suo
+.user

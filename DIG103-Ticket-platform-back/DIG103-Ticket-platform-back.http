@@ -1,0 +1,6 @@
+@DIG103_Ticket_platform_back_HostAddress = http://localhost:5239
+
+GET {{DIG103_Ticket_platform_back_HostAddress}}/ticketPlatform/
+Accept: application/json
+
+###
