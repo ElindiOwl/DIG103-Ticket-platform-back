@@ -7,6 +7,7 @@ public class MinioService : IMinioService
 {
     private readonly IMinioClient _minioClient;
     private readonly string _bucketName;
+    private readonly string _publicUrl;
     private bool _bucketChecked = false;
     private readonly SemaphoreSlim _bucketCheckLock = new(1, 1);
 
@@ -17,6 +18,7 @@ public class MinioService : IMinioService
         var accessKey = minioConfig["AccessKey"];
         var secretKey = minioConfig["SecretKey"];
         _bucketName = minioConfig["BucketName"];
+        _publicUrl = minioConfig["PublicUrl"] ?? $"http://{endpoint}/{_bucketName}";
 
         _minioClient = new MinioClient()
             .WithEndpoint(endpoint)
@@ -94,7 +96,7 @@ public class MinioService : IMinioService
 
     public string GetPublicUrl(string imagePath)
     {
-        return $"http://localhost:9000/{_bucketName}/{imagePath}";
+        return $"{_publicUrl}/{imagePath}";
     }
 
     public async Task DeleteImageAsync(string imagePath)

@@ -33,7 +33,7 @@ public class EventsController(IEventService eventService) : ControllerBase
     }
     
     [AllowAnonymous]
-    [HttpGet("featured-events")]
+    [HttpGet("featured")]
     public async Task<ActionResult<List<EventDto>>> GetFeaturedEvents()
     {
         try
