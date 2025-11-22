@@ -33,6 +33,22 @@ public class ArtistController(IArtistService artistService) : ControllerBase
     }
     
     [AllowAnonymous]
+    [HttpGet]
+    public async Task<ActionResult<List<ArtistDto>>> GetAllArtists()
+    {
+        try
+        {
+            var result = await artistService.GetAllArtistsAsync();
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+    
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ArtistDto>> GetArtistById(int id)
     {

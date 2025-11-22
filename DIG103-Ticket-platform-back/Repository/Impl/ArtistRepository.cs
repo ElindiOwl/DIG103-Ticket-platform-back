@@ -13,11 +13,27 @@ public class ArtistRepository(AppliactionDbContext context) : IArtistRepository
         await context.SaveChangesAsync();
         return artist;
     }
+
+    public async Task<List<Artist>> GetAllWithRelationsAsync()
+    {
+        return await context.Artists
+            .Include(a => a.ArtistImage)
+            .Include(a => a.Events)
+            .ToListAsync();
+    }
     
     public async Task<Artist?> GetByIdAsync(int id)
     {
         return await context.Artists
             .Include(a => a.ArtistImage)
+            .FirstOrDefaultAsync(a => a.Id == id);
+    }
+
+    public async Task<Artist?> GetByIdWithRelationsAsync(int id)
+    {
+        return await context.Artists
+            .Include(a => a.ArtistImage)
+            .Include(a => a.Events)
             .FirstOrDefaultAsync(a => a.Id == id);
     }
 
@@ -36,14 +52,6 @@ public class ArtistRepository(AppliactionDbContext context) : IArtistRepository
         await context.SaveChangesAsync();
     }
 
-    public async Task<List<int>> GetEventIdsAsync(int id)
-    {
-        return await context.Artists
-            .Where(a => a.Id == id)
-            .SelectMany(a => a.Events.Select(e => e.Id))
-            .ToListAsync();
-    }
-    
     public async Task<bool> ExistsByNameAsync(string name)
     {
         return await context.Artists

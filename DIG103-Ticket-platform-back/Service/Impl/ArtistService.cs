@@ -38,7 +38,20 @@ public class ArtistService(
             await artistRepository.UpdateAsync(artist);
         }
 
-        return await MapToDtoAsync(artist);
+        artist = await artistRepository.GetByIdWithRelationsAsync(artist.Id);
+        return MapToDto(artist!);
+    }
+
+    public async Task<List<ArtistDto>> GetAllArtistsAsync()
+    {
+        var artists = await artistRepository.GetAllWithRelationsAsync();
+
+        if (!artists.Any())
+        {
+            throw new KeyNotFoundException("No artists currently present");
+        }
+
+        return artists.Select(MapToDto).ToList();
     }
 
     public async Task<ArtistDto> UpdateArtistAsync(int id, UpdateArtistDto dto)
@@ -70,19 +83,20 @@ public class ArtistService(
         }
         
         await artistRepository.UpdateAsync(artist);
-        return await MapToDtoAsync(artist);
+        artist = await artistRepository.GetByIdWithRelationsAsync(id);
+        return MapToDto(artist!);
     }
 
     public async Task<ArtistDto> GetArtistByIdAsync(int id)
     {
-        var artist = await artistRepository.GetByIdAsync(id);
+        var artist = await artistRepository.GetByIdWithRelationsAsync(id);
         
         if (artist == null)
         {
             throw new KeyNotFoundException("Artist not found");
         }
 
-        return await MapToDtoAsync(artist);
+        return MapToDto(artist);
     }
 
     public async Task DeleteArtistAsync(int id)
@@ -102,7 +116,7 @@ public class ArtistService(
         await artistRepository.DeleteAsync(artist);
     }
 
-    private async Task<ArtistDto> MapToDtoAsync(Artist artist)
+    private ArtistDto MapToDto(Artist artist)
     {
         return new ArtistDto
         {
@@ -112,7 +126,7 @@ public class ArtistService(
             ImageUrl = artist.ArtistImage != null 
                 ? minioService.GetPublicUrl(artist.ArtistImage.ImagePath)
                 : null,
-            EventIds = await artistRepository.GetEventIdsAsync(artist.Id)
+            EventIds = artist.Events.Select(e => e.Id).ToList()
         };
     }
 }
