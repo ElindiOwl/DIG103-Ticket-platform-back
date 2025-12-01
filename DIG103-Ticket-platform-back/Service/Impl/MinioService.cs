@@ -23,6 +23,8 @@ public class MinioService : IMinioService
         _minioClient = new MinioClient()
             .WithEndpoint(endpoint)
             .WithCredentials(accessKey, secretKey)
+            // remove then https is implemented
+            .WithSSL(false)
             .Build();
         
     }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DIG103_Ticket_platform_back.Controller;
 
 [ApiController]
-[Route("api/artist")]
+[Route("api/artists")]
 
 public class ArtistController(IArtistService artistService) : ControllerBase
 {
